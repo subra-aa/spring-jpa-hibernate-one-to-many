@@ -2,6 +2,7 @@ package com.bezkoder.spring.hibernate.onetomany.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,26 @@ public class TutorialController {
     }
 
     return new ResponseEntity<>(tutorials, HttpStatus.OK);
+  }
+
+  @GetMapping("/tutorials/filter")
+  public ResponseEntity<List<Tutorial>> getAllTutorials() {
+    List<Tutorial> tutorials = new ArrayList<>();
+    List<Tutorial> filteredTutorialList = new ArrayList<>();
+
+    tutorialRepository.findAll().forEach(tutorials::add);
+
+    List<String> filteredTutorialDescriptions = tutorials.stream()
+            .map( tutorial -> tutorial.getDescription())
+            .filter( description -> description.contains("Two"))
+            .collect(Collectors.toList());
+
+    tutorials.stream().forEach( tutorial -> {
+         if (filteredTutorialDescriptions.contains(tutorial.getDescription())) {
+           filteredTutorialList.add(tutorial);
+         }
+    });
+    return new ResponseEntity<>(filteredTutorialList, HttpStatus.OK);
   }
 
   @GetMapping("/tutorials/{id}")
