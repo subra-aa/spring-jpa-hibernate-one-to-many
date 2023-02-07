@@ -51,13 +51,17 @@ public class TutorialController {
     List<Tutorial> tutorials = new ArrayList<>();
     List<Tutorial> filteredTutorialList = new ArrayList<>();
 
-    tutorialRepository.findAll().forEach(tutorials::add);
+    // Step 1: Get All the Tutorial Objects from DB
+    tutorialRepository.findAll().forEach(tutorial -> tutorials.add(tutorial));
 
+    // Step 2: Get all the Descriptions of the Tutorial Objects that has text "Two" in their description
     List<String> filteredTutorialDescriptions = tutorials.stream()
             .map( tutorial -> tutorial.getDescription())
             .filter( description -> description.contains("Two"))
             .collect(Collectors.toList());
 
+    /*Step 3: Iterate all the Tutorial Objects AND add those tutorial objects that conain text "Two" in their description
+     to a new filtered list*/
     tutorials.stream().forEach( tutorial -> {
          if (filteredTutorialDescriptions.contains(tutorial.getDescription())) {
            filteredTutorialList.add(tutorial);
